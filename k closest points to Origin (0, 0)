@@ -1,0 +1,65 @@
+#include<iostream>
+#include "vector"
+#include "stack"
+using namespace std;
+
+class Point {
+  public:
+  int x;
+  int y;
+  
+  Point(int c1, int c2) {
+    x = c1;
+    y = c2;
+  }
+};
+
+void distSort(vector<pair<Point, float>>& dist_list) {
+  int len = dist_list.size();
+  for(int i=0; i<len-1; i++) {
+    for(int j=0; j<len-i-1; j++) {
+      if(dist_list[j].second > dist_list[j+1].second) {
+        swap(dist_list[j], dist_list[j+1]);
+      }
+    }
+  }
+}
+
+vector<Point> kclosest(vector<Point>& list, int k) {
+  vector<Point> result;
+  vector<pair<Point, float>> dist_list;
+  
+  for(Point p: list) {
+    float dist = p.x*p.x + p.y*p.y;
+    dist_list.push_back({p, dist});
+  }
+  
+  distSort(dist_list);
+  
+  int count = min((int)list.size(), k);
+  
+  for(pair<Point, float> p: dist_list) {
+    if(!count--) {
+      break;
+    }
+    result.push_back(p.first);
+  }
+  
+  return result;
+}
+
+int main() {
+  Point p(1,1);
+  Point q(2,2);
+  Point r(3,4);
+  
+  vector<Point> list1 = { p, q, r };
+  vector<Point> list2 = { r, q };
+  vector<Point> list3 = { r, q, p};
+
+  vector<Point> result = kclosest(list3, 2);
+  cout<<"Result: "<<endl;
+  for(int i=0; i<result.size(); i++) {
+    cout<<result[i].x<<" "<<result[i].y<<endl;
+  }
+ }
